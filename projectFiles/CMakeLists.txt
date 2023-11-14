@@ -12,7 +12,7 @@ file(
  *.c *.cpp
 )
 
-install(FILES ${FINALPROJECT_INC} DESTINATION include/projectFiles_finalProject)
-add_executable(projectFiles_finalProject ${FINALPROJECT_SRC} ${FINALPROJECT_INC} ${FINALPROJECT_ASSETS})
-target_link_libraries(projectFiles_finalProject PUBLIC core IMGUI)
-target_include_directories(projectFiles_finalProject PUBLIC ${CORE_INC_DIR} ${stb_INCLUDE_DIR})
+install(FILES ${FINALPROJECT_INC} DESTINATION include/finalProject)
+add_executable(finalProject ${FINALPROJECT_SRC} ${FINALPROJECT_INC} ${FINALPROJECT_ASSETS})
+target_link_libraries(finalProject PUBLIC core IMGUI)
+target_include_directories(finalProject PUBLIC ${CORE_INC_DIR} ${stb_INCLUDE_DIR})
