@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <math.h>
 
+#include <lib/external/glad.h>
+#include <lib/ewMath/ewMath.h>
 #include <GLFW/glfw3.h>
 
 const int SCREEN_WIDTH = 1080;
@@ -13,7 +15,7 @@ int main() {
 		return 1;
 	}
 
-	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hello Triangle", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Final Project", NULL, NULL);
 	if (window == NULL) {
 		printf("GLFW failed to create window");
 		return 1;
