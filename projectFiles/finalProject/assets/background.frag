@@ -5,6 +5,6 @@ out vec4 FragColor;
 in vec2 UV;
 
 void main(){
-	vec3 color = vec3(0.0, 0.0, 0.0);
+	vec3 color = vec3(0.0, 0.0, 0.5);
 	FragColor = vec4(color, 1.0);
 }
