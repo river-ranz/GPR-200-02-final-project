@@ -17,6 +17,7 @@ struct Vertex {
 
 unsigned int createVAO(Vertex* vertexData, int numVertices, unsigned short* indicesData, int numIndices);
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
+unsigned int swap(unsigned int current, unsigned int dragonTexture1, unsigned int dragonTexture2);
 
 const int SCREEN_WIDTH = 1080;
 const int SCREEN_HEIGHT = 720;
@@ -56,9 +57,13 @@ int main() {
 	ew::Shader backgroundShader("assets/background.vert", "assets/background.frag");
 
 	ew::Shader dragonShader("assets/dragon.vert", "assets/dragon.frag");
-	unsigned int dragonTexture = ew::loadTexture("assets/dragon.png", GL_REPEAT, GL_NEAREST); //temp image for testing
+	unsigned int dragonTexture1 = ew::loadTexture("assets/dragon1.png", GL_REPEAT, GL_NEAREST);
+	unsigned int dragonTexture2 = ew::loadTexture("assets/dragon2.png", GL_REPEAT, GL_NEAREST);
 
 	unsigned int quadVAO = createVAO(vertices, 4, indices, 6);
+
+	int index = 1;
+	unsigned int texture = dragonTexture1;
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -75,12 +80,17 @@ int main() {
 		//draw
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, NULL);
 
-		//character shader
+		//dragon shader by River
 		dragonShader.use();
+
+		if (index % 10 == 0) {
+			texture = swap(texture, dragonTexture1, dragonTexture2);
+		}
+		index++;
 
 		//bind texture
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, dragonTexture);
+		glBindTexture(GL_TEXTURE_2D, texture);
 		
 		//set uniforms
 		dragonShader.setInt("_DragonTexture", 0);
@@ -121,4 +131,12 @@ unsigned int createVAO(Vertex* vertexData, int numVertices, unsigned short* indi
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
+}
+
+//swap function by River
+unsigned int swap(unsigned int current, unsigned int dragonTexture1, unsigned int dragonTexture2) {
+	if (current == dragonTexture1) {
+		return dragonTexture2;
+	}
+	else { return dragonTexture1; }
 }
