@@ -71,11 +71,14 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glBindVertexArray(quadVAO);
 
+		float time = (float)glfwGetTime();
+
 		//background shader
 		backgroundShader.use();
 
 		//set uniforms
-
+		backgroundShader.setFloat("_Time", time);
+		backgroundShader.setVec3("_HillColor", ew::Vec3(0.1, 0.1, 0.1));
 
 		//draw
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, NULL);
