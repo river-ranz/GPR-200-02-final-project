@@ -6,7 +6,6 @@ in vec2 UV;
 
 // World Data
 uniform float _Time;
-uniform float _ScrollSpeed;
 uniform vec2 _Resolution;
 
 //color data
@@ -20,6 +19,10 @@ void main(){
 	vec3 color = vec3(0.2, 0.4, 0.8);
 
 	vec2 uv = vec2(UV.x * 0.5, UV.y * 0.5); //scaling
+
+	//mountains
+	vec4 mountainA = texture(_Mountain1, uv);
+	vec4 mountainB = texture(_Mountain2, uv);
 
 	//rolling hills by River
 	float hills = 1.0 - step(sin(UV.x * 5 + _Time) * 0.1 + 0.3, UV.y);

@@ -55,6 +55,8 @@ int main() {
 	}
 
 	ew::Shader backgroundShader("assets/background.vert", "assets/background.frag");
+	unsigned int mountainTexure1 = ew::loadTexture("assets/Mountain1.png", GL_REPEAT, GL_NEAREST);
+	unsigned int mountainTexure2 = ew::loadTexture("assets/Mountain2.png", GL_REPEAT, GL_NEAREST);
 
 	ew::Shader dragonShader("assets/dragon.vert", "assets/dragon.frag");
 	unsigned int dragonTexture1 = ew::loadTexture("assets/dragon1.png", GL_REPEAT, GL_NEAREST);
@@ -76,9 +78,17 @@ int main() {
 		//background shader
 		backgroundShader.use();
 
+		//bind textures
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, mountainTexure1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, mountainTexure2);
+
 		//set uniforms
 		backgroundShader.setFloat("_Time", time);
-		backgroundShader.setVec3("_HillColor", ew::Vec3(0.1, 0.1, 0.1));
+		backgroundShader.setInt("_Mountain1", mountainTexure1);
+		backgroundShader.setInt("_Mountain2", mountainTexure2);
+		backgroundShader.setVec3("_HillColor", ew::Vec3(0.2, 0.7, 0.2));
 
 		//draw
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, NULL);
