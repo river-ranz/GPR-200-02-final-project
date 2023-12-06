@@ -4,8 +4,15 @@
 out vec4 FragColor;
 in vec2 UV;
 
+uniform float _Time;
 uniform sampler2D _DragonTexture;
 
+const float col = 2.0;
+const float row = 1.0;
+const uint numSprites = 2;
+
 void main(){
-	FragColor = texture(_DragonTexture, UV);
+	uint sprite = int(_Time * 5) % numSprites;
+    vec2 pos = vec2(sprite % int(col), int(sprite / col));
+    FragColor = texture(_DragonTexture, vec2((UV.x / col) + pos.x * (1.0 / col), (UV.y / row) + pos.y * (1.0 / row)));
 }
