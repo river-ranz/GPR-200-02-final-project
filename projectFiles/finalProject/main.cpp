@@ -7,6 +7,10 @@
 #include <lib/ewMath/ewMath.h>
 #include <GLFW/glfw3.h>
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
 #include <lib/texture.h>
 #include <lib/shader.h>
 
@@ -52,11 +56,20 @@ int main() {
 		printf("GLAD Failed to load GL headers");
 		return 1;
 	}
+	//Initialize ImGUI
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init();
 
 	ew::Shader backgroundShader("assets/background.vert", "assets/background.frag");
-	unsigned int mountainTexure1 = ew::loadTexture("assets/Mountain1.png", GL_REPEAT, GL_NEAREST);
-	unsigned int mountainTexure2 = ew::loadTexture("assets/Mountain2.png", GL_REPEAT, GL_NEAREST);
+	unsigned int mountainTexture1 = ew::loadTexture("assets/Mountain1.png", GL_REPEAT, GL_NEAREST);
+	unsigned int mountainTexture2 = ew::loadTexture("assets/Mountain2.png", GL_REPEAT, GL_NEAREST);
+	unsigned int cloudTexture1 = ew::loadTexture("assets/Clouds1.png", GL_REPEAT, GL_NEAREST);
 	float flightSpeed = 1.25;
+	float mountain1Start = 0;
+	float mountain2Start = 0;
+	float clouds1Start = 0;
 
 	ew::Shader dragonShader("assets/dragon.vert", "assets/dragon.frag");
 	unsigned int dragonSpriteSheet = ew::loadTexture("assets/spriteSheet.png", GL_REPEAT, GL_NEAREST);
@@ -74,20 +87,32 @@ int main() {
 		//background shader
 		backgroundShader.use();
 
-		//bind textures
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, mountainTexure1);
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, mountainTexure2);
-
-		//set uniforms
 		backgroundShader.setFloat("_Time", time);
 		backgroundShader.setFloat("_backgroundSpeed", flightSpeed);
-		backgroundShader.setInt("_Mountain1", mountainTexure1);
-		backgroundShader.setInt("_Mountain2", mountainTexure2);
 		backgroundShader.setVec4("_HillColor", ew::Vec4(0.2, 0.7, 0.2, 1.0));
 
-		//draw
+		// Mountain 1 -- By Liam
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, mountainTexture1);
+		backgroundShader.setInt("_Texture", mountainTexture1);
+		backgroundShader.setInt("_ImageID", 2);
+		backgroundShader.setFloat("_SpriteStartPos", clouds1Start);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, NULL);
+
+		// Mountain 2 -- By Liam
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, mountainTexture2);
+		backgroundShader.setInt("_Texture", mountainTexture2);
+		backgroundShader.setInt("_ImageID", 3);
+		backgroundShader.setFloat("_SpriteStartPos", mountain1Start);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, NULL);
+
+		// Clouds -- By Liam
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, cloudTexture1);
+		backgroundShader.setInt("_Texture", cloudTexture1);
+		backgroundShader.setInt("_ImageID", 1);
+		backgroundShader.setFloat("_SpriteStartPos", mountain2Start);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, NULL);
 
 		//dragon shader by River
@@ -106,6 +131,25 @@ int main() {
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		//UI by Liam
+		{
+			ImGui_ImplGlfw_NewFrame();
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui::NewFrame();
+
+			ImGui::Begin("Settings");
+
+			ImGui::DragFloat("Speed", &flightSpeed, 0.05f);
+			ImGui::DragFloat("Cloud Start Position", &clouds1Start, 0.05f);
+			ImGui::DragFloat("Mountain 1 Start Position", &mountain1Start, 0.05f);
+			ImGui::DragFloat("Mountain 2 Start Position", &mountain2Start, 0.05f);
+
+			ImGui::End();
+
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		}
 
 		glfwSwapBuffers(window);
 	}
